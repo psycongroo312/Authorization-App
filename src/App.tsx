@@ -1,10 +1,19 @@
 import LoginForm from "./components/LoginForm";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return (
-    <div>
+    <QueryClientProvider client={queryClient}>
       <LoginForm />
-    </div>
+    </QueryClientProvider>
   );
 }
 

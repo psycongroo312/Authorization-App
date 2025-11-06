@@ -1,6 +1,7 @@
 import React from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import TwoFactorAuthForm from "./TwoFactorAuthForm";
+import { useMutation } from "@tanstack/react-query";
 
 export default function LoginForm() {
   const [email, setEmail] = React.useState("");
@@ -11,20 +12,51 @@ export default function LoginForm() {
   const [currentStep, setCurrentStep] = React.useState<"login" | "2fa">(
     "login",
   );
+  const [apiError, setApiError] = React.useState("");
+
+  const loginMutation = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Login failed");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setApiError("");
+      if (data.requires2FA) {
+        setCurrentStep("2fa");
+      } else {
+        console.log("Logged in without 2FA");
+      }
+    },
+    onError: (error: Error) => {
+      setApiError(error.message);
+    },
+  });
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentStep("2fa");
+    setApiError("");
+    loginMutation.mutate({ email, password });
   };
-
   const handleBack = () => {
     setCurrentStep("login");
   };
-
   if (currentStep === "2fa") {
     return <TwoFactorAuthForm onBack={handleBack} />;
   }
-
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl w-full max-w-md shadow-sm p-8 space-y-6">
@@ -34,14 +66,15 @@ export default function LoginForm() {
           </div>
           <span className="text-lg font-medium text-gray-900">Company</span>
         </div>
-
         <h1 className="text-center text-2xl font-medium text-gray-900 leading-tight">
           Sign in to your account to
           <br />
           continue
         </h1>
-
-        <form className="space-y-4 flex flex-col gap-2">
+        <form
+          className="space-y-4 flex flex-col gap-2"
+          onSubmit={handleLoginSubmit}
+        >
           <div>
             <div className="relative">
               <Mail className="h-5 w-5 text-gray-400 absolute top-1/2 -translate-y-1/2 left-3" />
@@ -103,7 +136,7 @@ export default function LoginForm() {
           {passwordError && (
             <p className="text-red-500 text-sm mt-1">{passwordError}</p>
           )}
-
+          {apiError && <p className="text-red-500 text-sm mt-1">{apiError}</p>}
           <button
             type="submit"
             disabled={
@@ -111,7 +144,8 @@ export default function LoginForm() {
               !password ||
               !email.includes("@") ||
               password.length < 6 ||
-              !/[A-Z]/.test(password)
+              !/[A-Z]/.test(password) ||
+              loginMutation.isPending
             }
             className={`w-full ${
               email &&
@@ -122,9 +156,8 @@ export default function LoginForm() {
                 ? "bg-blue-600 text-white cursor-pointer"
                 : "bg-gray-100 text-gray-700"
             } font-medium py-3 rounded-lg transition-colors duration-200`}
-            onClick={handleLoginSubmit}
           >
-            Log in
+            {loginMutation.isPending ? "Logging in..." : "Log in"}
           </button>
         </form>
       </div>
