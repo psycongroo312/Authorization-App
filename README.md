@@ -15,6 +15,19 @@ Includes full **mock API** using **MSW (Mock Service Worker)** for development a
 
 ---
 
+## Setup
+
+# Clone and install
+- git clone git@github.com:psycongroo312/Authorization-App.git
+- cd login-app
+- npm install
+
+# Start dev server
+
+npm run dev
+
+---
+
 ## Successful Login
 
 - Email:    test@example.com
