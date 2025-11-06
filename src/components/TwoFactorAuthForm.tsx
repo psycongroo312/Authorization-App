@@ -113,7 +113,7 @@ export default function TwoFactorAuthForm({ onBack }: TwoFactorAuthFormProps) {
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -181,7 +181,7 @@ export default function TwoFactorAuthForm({ onBack }: TwoFactorAuthFormProps) {
                 setTimeout(() => setIsCodeExpired(true), 30_000);
               }}
               disabled={requestNewCodeMutation.isPending}
-              className="w-full py-3 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-70"
+              className="w-full py-3 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-70 cursor-pointer"
             >
               {requestNewCodeMutation.isPending ? "Requesting..." : "Get new"}
             </button>
@@ -189,7 +189,7 @@ export default function TwoFactorAuthForm({ onBack }: TwoFactorAuthFormProps) {
             <button
               type="submit"
               disabled={verifyMutation.isPending}
-              className="w-full py-3 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-70"
+              className="w-full py-3 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-70 cursor-pointer"
             >
               {verifyMutation.isPending ? "Verifying..." : "Continue"}
             </button>

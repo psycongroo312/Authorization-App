@@ -104,12 +104,15 @@ export default function LoginForm() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value);
-                if (e.target.value.length < 6) {
+                const value = e.target.value;
+                setPassword(value);
+
+                // Валидация
+                if (value.length < 6) {
                   setPasswordError(
                     "Пароль должен содержать минимум 6 символов",
                   );
-                } else if (!/[A-Z]/.test(e.target.value)) {
+                } else if (!/[A-ZА-Я]/.test(value)) {
                   setPasswordError(
                     "Пароль должен содержать хотя бы одну заглавную букву",
                   );
@@ -142,19 +145,14 @@ export default function LoginForm() {
             disabled={
               !email ||
               !password ||
-              !email.includes("@") ||
-              password.length < 6 ||
-              !/[A-Z]/.test(password) ||
+              !!emailError ||
+              !!passwordError ||
               loginMutation.isPending
             }
             className={`w-full ${
-              email &&
-              password &&
-              email.includes("@") &&
-              password.length >= 6 &&
-              /[A-Z]/.test(password)
+              email && password && !emailError && !passwordError
                 ? "bg-blue-600 text-white cursor-pointer"
-                : "bg-gray-100 text-gray-700"
+                : "bg-gray-100 text-gray-700 cursor-not-allowed"
             } font-medium py-3 rounded-lg transition-colors duration-200`}
           >
             {loginMutation.isPending ? "Logging in..." : "Log in"}
