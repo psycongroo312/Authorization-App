@@ -17,14 +17,16 @@ Includes full **mock API** using **MSW (Mock Service Worker)** for development a
 
 ## Successful Login
 
-Email:    test@example.com
-Password: Password123
-2FA Code: 123456
+- Email:    test@example.com
+- Password: Password123
+- 2FA Code: 123456
+
+---
 
 ## Tech Stack
 
-Vite + React + TypeScript
-Tailwind CSS
-React Query
-MSW v2 for API mocking
-Lucide Icons
+- Vite + React + TypeScript
+- Tailwind CSS
+- React Query
+- MSW v2 for API mocking
+- Lucide Icons
